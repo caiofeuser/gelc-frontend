@@ -1,0 +1,24 @@
+.editor-preview {
+
+	font-family: "Roboto",-apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen","Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  	-webkit-font-smoothing: antialiased;
+  	-moz-osx-font-smoothing: grayscale;
+  	background-color: #fff;
+
+}
+
+.editor-preview p {
+
+	text-indent: 2rem;
+	text-align: justify;
+
+}
+
+.editor-preview img {
+
+	padding: .5rem 1rem;
+	background-color: #f8f9fa;
+	margin: 1rem auto;
+
+}

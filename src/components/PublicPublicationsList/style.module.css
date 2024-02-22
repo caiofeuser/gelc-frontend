@@ -1,0 +1,50 @@
+.publication h2 {
+    font-size: 1.1rem; 
+    overflow: hidden;
+    text-transform: uppercase;
+    text-align: justify;
+    margin: .5rem 0rem;
+    max-height: 4rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.mainPublication h2 {
+    font-size: 1.3rem; 
+    overflow: hidden;
+    text-transform: uppercase;
+    text-align: justify;
+    margin: .5rem 0rem;
+    max-height: 4.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.publication a, .mainPublication a  {
+    color: #4eab4b;
+}
+
+.publication p {
+    font-size: 1rem;
+    max-height: 4.3rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.mainPublication p {
+    font-size: 1.1rem;
+    max-height: 4.5rem; 
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* .publication img {
+    max-width: 768px;
+    max-height: 386px;
+} */

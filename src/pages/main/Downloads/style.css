@@ -1,0 +1,20 @@
+#downloads-page-main {
+
+	min-height: 100vh;
+
+}
+
+#downloads-page-main h1 {
+    position: relative;
+    text-transform: uppercase;
+}
+
+#downloads-page-main h1:after{
+    content: "";
+    background-color: #4eab4b;
+    width: 20%;
+    height: 3px;
+    bottom: -10px;
+    position: absolute;
+    left: 40%;
+}

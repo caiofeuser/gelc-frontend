@@ -1,0 +1,37 @@
+section#publications-section h1 {
+    position: relative;
+}
+
+section#publications-section h1:after{
+    content: "";
+    background-color: #4eab4b;
+    width: 20%;
+    height: 3px;
+    bottom: -10px;
+    position: absolute;
+    left: 40%;
+}
+
+section#publications-section .publication h2 {
+    font-size: 1.1rem; 
+    max-height: 4rem;
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+section#publications-section .publication a {
+    color: #4eab4b;
+}
+
+section#publications-section .publication p {
+    font-size: 1rem; 
+    max-height: 4.3rem;
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}

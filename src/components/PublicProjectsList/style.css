@@ -1,0 +1,41 @@
+#public-projects-list {
+
+  min-height: 60vh;
+
+}
+
+#public-projects-list .project-item img {
+
+    max-height: 150px;
+    max-width: 150px;
+    margin: auto 0;
+
+}
+
+#public-projects-list .project-item h5 {
+
+    font-size: 1.2rem; 
+    height: 2.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+#public-projects-list .truncate-ellipses::before {
+  content: "...";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+#public-projects-list .project-item a {
+    color: #000;
+}
+
+#public-projects-list .project-item p {
+
+    font-size: 1rem; 
+    max-height: 3rem;
+    overflow: hidden;
+
+}

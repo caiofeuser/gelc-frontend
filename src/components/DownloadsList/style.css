@@ -1,0 +1,13 @@
+.downloads-list-item .media-body {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.downloads-list-item .media-body p {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+	max-height: 3rem;
+
+}

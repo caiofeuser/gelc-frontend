@@ -1,0 +1,18 @@
+section#aboutus-section h2 {
+    position: relative;
+    text-transform: uppercase;
+}
+
+section#aboutus-section h2:after{
+    content: "";
+    background-color: #4eab4b;
+    width: 20%;
+    height: 3px;
+    bottom: -10px;
+    position: absolute;
+    left: 40%;
+}
+
+section#aboutus-section p {
+    text-indent: 2rem;
+}

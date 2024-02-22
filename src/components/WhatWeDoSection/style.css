@@ -1,0 +1,35 @@
+section#whatwedo-section {
+    background-color: #4eab4b;
+    color: #fff;
+}
+
+section#whatwedo-section h1 {
+    position: relative;
+}
+
+section#whatwedo-section h1::after {
+    content: "";
+    background-color: #fff;
+    width: 20%;
+    height: 3px;
+    bottom: -10px;
+    position: absolute;
+    left: 40%;
+}
+
+section#whatwedo-section h2 {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+
+section#whatwedo-section figure {
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 1.5rem;
+}
+
+section#whatwedo-section figure img{
+    max-width: 150px;
+    min-width: 60px;
+    margin: auto;
+}

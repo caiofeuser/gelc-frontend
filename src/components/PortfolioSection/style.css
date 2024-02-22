@@ -1,0 +1,26 @@
+section#portfolio-section {
+	background-color: rgba(78,171,75,0.95);
+	position: relative;
+}
+
+section#portfolio-section::after {
+	content: "";
+	background-image: url('./img/background.jpg');
+	background-position: bottom;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	z-index: -1;
+}
+
+section#portfolio-section p {
+	font-weight: bold;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+section#portfolio-section span.counter {
+	font-size: 2rem;
+}

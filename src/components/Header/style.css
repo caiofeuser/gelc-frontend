@@ -1,0 +1,12 @@
+header .navbar-nav {
+    text-transform: uppercase;
+}
+
+header .navbar-toggler:hover {
+    background-color: #eee;
+    transition: .25s;
+}
+
+header .navbar-collapse {
+    transition: ease .5s;
+}

@@ -1,0 +1,16 @@
+.title {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    color: #28a745;
+    margin-top: 1rem;
+}
+
+.content {
+    text-align: justify;
+    text-indent: 2rem;
+}
+
+.content img {
+    text-align: center;
+    margin: 0 auto;
+}

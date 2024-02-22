@@ -1,0 +1,24 @@
+footer {
+	background-color: rgba(0, 51, 0, 0.96);
+	position: relative;
+}
+
+footer::after {
+	content: "";
+	background-image: url('./img/background.jpg');
+	background-position: top;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	z-index: -1;
+}
+
+footer h2, footer p, footer li {
+	color: #fff;
+}
+
+footer .copyright {
+	background-color: rgb(0, 51, 0);
+}

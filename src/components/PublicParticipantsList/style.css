@@ -1,0 +1,15 @@
+.participant-card {
+    border-radius: 0px;
+    background-color: #4eab4b;
+    max-height: 480px;
+    max-width: 240px;
+}
+
+.participant-card img {
+    border-radius: 0px;
+    border-width: 0px;
+}
+
+.participant-card a {
+    color: #fff;
+}

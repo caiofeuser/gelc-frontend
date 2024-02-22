@@ -1,0 +1,15 @@
+section#groupactions-section h2 {
+    margin-top: 7%;
+    margin-bottom: 7%;
+    color: #4eab4b;
+    font-size: 1.3rem;
+}
+
+section#groupactions-section li,section#groupactions-section p {
+    font-size: .95rem;
+}
+
+section#groupactions-section li::before, section#groupactions-section p::before { 
+    content: "» ";
+    color: #4eab4b;
+  }

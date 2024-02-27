@@ -1,38 +1,30 @@
-import React from 'react';
-import {Form, Button} from 'react-bootstrap';
+import React, { useState, useCallback } from "react";
+import { Form, Button } from "react-bootstrap";
 
-class CustomForms extends React.Component {
+const CustomForms = (props) => {
+  const [isBeingSent, setIsBeingSent] = useState(false);
 
-	constructor(props) {
-		
-		super(props);
-		this.state = {isBeingSent:false};
-	
-	}
+  const handleFormSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setIsBeingSent(true);
+      const form = new FormData(e.target);
+      await props.onSubmit(form);
+      setIsBeingSent(false);
+    },
+    [props]
+  );
 
-	handleFormSubmit = async (e) => {
-		
-		e.preventDefault();
-		this.setState({isBeingSent:true});
-		let form = new FormData(e.target);
-		(await this.props.onSubmit(form));
-		this.setState({isBeingSent:false});
-
-	};
-
-	render() {
-
-		return (
-	        <section className="my-2">
-	        		<Form onSubmit={this.handleFormSubmit}>
-						{this.props.children}
-						<Button variant="success" type="submit">{this.state.isBeingSent?'Enviando...':'Salvar Informações'}</Button>
-					</Form>
-	        </section>
-		);
-
-	}
-	
-}
+  return (
+    <section className="my-2">
+      <Form onSubmit={handleFormSubmit}>
+        {props.children}
+        <Button variant="success" type="submit">
+          {isBeingSent ? "Enviando..." : "Salvar Informações"}
+        </Button>
+      </Form>
+    </section>
+  );
+};
 
 export default CustomForms;

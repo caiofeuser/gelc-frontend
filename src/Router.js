@@ -21,18 +21,13 @@ import { isAuthenticated, isAuthorized } from "./resources/auth";
 
 function PrivateRoute({ component: Component, permission, ...rest }) {
   return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated() && isAuthorized(permission) ? (
-          <Component {...props} />
-        ) : (
-          <Navigate
-            to={{ pathname: "/admin", state: { from: props.location } }}
-          />
-        )
-      }
-    />
+    <>
+      {isAuthenticated() && isAuthorized(permission) ? (
+        <Component />
+      ) : (
+        <Navigate to={{ pathname: "/admin", state: { from: rest.location } }} />
+      )}
+    </>
   );
 }
 
@@ -56,29 +51,40 @@ function Router() {
           element={<ForgotPass />}
         />
         <Route
+          path="/admin/informacoes"
           element={
             <PrivateRoute
-              permission="max"
-              path="/admin/informacoes"
+              permission="mid"
               exact={true}
-              element={Informations}
+              component={Informations}
             />
           }
         />
         <Route
+          path="/admin/participantes"
           element={
             <PrivateRoute
               permission="mid"
-              path="/admin/participantes"
               exact={true}
               component={PrivateParticipants}
             />
           }
         />
         <Route
+          path="/admin/participante"
           element={
             <PrivateRoute
               permission="min"
+              exact={true}
+              component={PrivateParticipant}
+            />
+          }
+        />
+
+        <Route
+          element={
+            <PrivateRoute
+              // permission="min"
               path="/admin/participante"
               exact={true}
               component={PrivateParticipant}
@@ -86,33 +92,29 @@ function Router() {
           }
         />
         <Route
+          path="/admin/projetos"
           element={
             <PrivateRoute
-              permission="mid"
-              path="/admin/projetos"
+              // permission="mid"
               exact={true}
               component={PrivateProjects}
             />
           }
         />
         <Route
+          path="/admin/downloads"
           element={
             <PrivateRoute
               permission="max"
-              path="/admin/downloads"
               exact={true}
               component={PrivateDownloads}
             />
           }
         />
         <Route
+          path="/admin/postagens"
           element={
-            <PrivateRoute
-              permission="min"
-              path="/admin/postagens"
-              exact={true}
-              component={Posts}
-            />
+            <PrivateRoute permission="min" exact={true} component={Posts} />
           }
         />
 
@@ -123,14 +125,3 @@ function Router() {
 }
 
 export default Router;
-
-{
-  /* <Route
-element={
-  <StandardPage
-    children={<PrivateRoute element={Home} />}
-  />
-}
-path="/dashboard"
-/> */
-}

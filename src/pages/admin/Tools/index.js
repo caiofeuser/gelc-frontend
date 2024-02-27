@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header";
-import { Container, Col, Row, Tab, Tabs } from "react-bootstrap";
+import { Container, Col, Row } from "react-bootstrap";
 import DownloadsList from "../../../components/DownloadsList";
 import DownloadsForms from "../../../components/DownloadsForms/";
 import ImageForms from "../../../components/ImageForms";
@@ -13,7 +13,6 @@ const Downloads = () => {
   const [downloadsPagination, setDownloadsPagination] = useState({});
   const [search, setSearch] = useState("");
   const [mode, setMode] = useState("add");
-  const [images, setImages] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,14 +24,9 @@ const Downloads = () => {
           setSelectedDownload(fetchedDownloads[0]);
           setMode("update");
         }
-        await api.get("/image").then((response) => {
-          setImages(response.data);
-        });
-
         setDownloads(fetchedDownloads);
         setDownloadsPagination(fetchedDownloadsPagination);
       } catch (err) {
-        console.log(err);
         alert(
           "Não foi possível acessar o servidor! Por favor, tente novamente em alguns instantes."
         );
@@ -63,43 +57,37 @@ const Downloads = () => {
       const title = form.get("title");
       const description = form.get("description");
       const url = form.get("url");
-      const image = form?.get("file");
 
       if (!title || !description || !url) {
         alert("Há algum problema com os dados fornecidos.");
         return;
       }
-      let selectedDownloadProv;
+
+      let selectedDownload;
       if (mode === "add") {
         const { data: newDownload } = await api.post("/download/", {
           title,
           description,
           url,
-          image: image ? image : null,
         });
-        selectedDownloadProv = newDownload;
+        selectedDownload = newDownload;
         setMode("update");
         alert("Download disponibilizado com sucesso!");
       } else if (mode === "update") {
-        selectedDownloadProv = selectedDownload
         const updatedDownload = { title, description, url };
         const { data: updatedSelectedDownload } = await api.put(
-          `/download/${
-            selectedDownloadProv ? selectedDownloadProv._id : selectDownload._id
-          }`,
+          `/download/${selectedDownload._id}`,
           updatedDownload
         );
+        selectedDownload = updatedSelectedDownload;
         alert("Download alterado com sucesso!");
       }
       setDownloads((prevDownloads) => [
-        selectedDownloadProv,
-        ...prevDownloads.filter(
-          (item) => item._id !== selectedDownloadProv._id
-        ),
+        selectedDownload,
+        ...prevDownloads.filter((item) => item._id !== selectedDownload._id),
       ]);
     } catch (err) {
-      console.log(err);
-      switch (err?.response?.status) {
+      switch (err.response.status) {
         case 500:
           alert(
             "Ocorreu algum erro no servidor! Verifique a validade dos dados enviados e tente novamente."
@@ -144,7 +132,7 @@ const Downloads = () => {
           }
         }
       } catch (err) {
-        switch (err?.response?.status) {
+        switch (err.response.status) {
           case 500:
             alert(
               "Ocorreu algum erro no servidor! Tente novamente em alguns instantes."
@@ -188,16 +176,6 @@ const Downloads = () => {
       } else {
         return;
       }
-
-      console.log(image._id);
-
-      const updatedDownload = await api.put(
-        `/download/${selectedDownload._id}`,
-        {
-          image: image._id,
-        }
-      );
-
       const updatedSelectedDownload = { ...selectedDownload, image };
       setSelectedDownload(updatedSelectedDownload);
       setDownloads((prevDownloads) => [
@@ -208,8 +186,7 @@ const Downloads = () => {
       ]);
       alert("Arquivo enviado com sucesso!");
     } catch (err) {
-      console.log(err);
-      switch (err?.response?.status) {
+      switch (err.response.status) {
         case 500:
           alert(
             "Ocorreu algum erro no servidor! Verifique a validade dos dados enviados tente novamente em alguns instantes."
@@ -248,8 +225,7 @@ const Downloads = () => {
       setDownloads(fetchedDownloads);
       setDownloadsPagination(fetchedDownloadsPagination);
     } catch (err) {
-      console.log(err);
-      switch (err?.response?.status) {
+      switch (err.response.status) {
         case 500:
           alert(
             "Ocorreu algum erro no servidor! Tente novamente em alguns instantes."
@@ -296,24 +272,20 @@ const Downloads = () => {
                 onSearch={searchDownload}
               />
             </Col>
-            <Col lg={6}>
-              <Tabs defaultActiveKey="download" id="uncontrolled-tab">
-                <Tab eventKey="download" title="Download">
-                  <DownloadsForms
-                    key={selectedDownload._id}
-                    download={selectedDownload}
-                    onSubmit={saveDownload}
-                    mode={mode}
-                  />
-                </Tab>
-                <Tab eventKey="image" title="Imagem">
-                  <ImageForms
-                    image={selectedDownload?.image}
-                    onSubmit={updateImage}
-                    disabled={mode === "add"}
-                  />
-                </Tab>
-              </Tabs>
+            <Col lg={6} onClick={() => console.log(selectedDownload.image)}>
+              {selectedDownload._id && mode === "update" && (
+                <ImageForms
+                  
+                  image={selectedDownload.image}
+                  onSubmit={updateImage}
+                />
+              )}
+              <DownloadsForms
+                key={selectedDownload._id}
+                download={selectedDownload}
+                onSubmit={saveDownload}
+                mode={mode}
+              />
             </Col>
           </Row>
         </Container>

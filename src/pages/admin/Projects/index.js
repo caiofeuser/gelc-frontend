@@ -39,6 +39,7 @@ function Projects() {
           setMode("update");
         }
 
+        console.log("fecthdata, useEffetct", fetchedProjects);
         setProjects(fetchedProjects);
         setProjectsPagination(fetchedProjectsPagination);
       } catch (err) {
@@ -99,19 +100,23 @@ function Projects() {
 
         let { data: updatedSelectedProject } = await api.put(
           `/project/${selectedProject._id}`,
-          project,
+          project
         );
 
-            
+        console.log("aqui qui  auqi", updatedSelectedProject);
         setSelectedProject(updatedSelectedProject);
         setProjectPage();
         alert("Projeto alterado com sucesso!");
       }
     } catch (err) {
-      // handleErrorResponse(err);
-      window.location.reload();
+      handleErrorResponse(err);
+      // window.location.reload();
     }
   };
+
+  useEffect(() => {
+    console.log(selectedProject.members);
+  }, [selectedProject]);
 
   const saveParticipant = async (e) => {
     e.preventDefault();
@@ -125,9 +130,11 @@ function Projects() {
         `/project/${selectedProject._id}/${office}/${email}`
       );
 
+      console.log("saveParticipant", newSelectedProject);
       setSelectedProject(newSelectedProject);
       setProjectPage();
       alert("Novo membro cadastrado no projeto");
+      window.location.reload();
     } catch (err) {
       handleErrorResponse(err);
     }
@@ -179,6 +186,7 @@ function Projects() {
           `/project/${selectedProject._id}/${email}`
         );
 
+        window.location.reload();
         setProjectPage();
         setSelectedProject(newSelectedProject);
       } catch (err) {
@@ -208,8 +216,13 @@ function Projects() {
         return;
       }
 
+      console.log(image._id);
+
+      const updatedProject = await api.put(`/project/${selectedProject._id}`, {
+        image: image._id,
+      });
+
       let updatedSelectedProject = { ...selectedProject, image };
-      setProjectPage();
       setSelectedProject(updatedSelectedProject);
       alert("Arquivo enviado com sucesso!");
     } catch (err) {
@@ -232,6 +245,8 @@ function Projects() {
       let { docs: fetchedProjects, ...fetchedProjectsPagination } = (
         await api.get("/project", { params })
       ).data;
+
+      console.log("setProjectPage", fetchedProjects);
 
       setProjects(fetchedProjects);
       setProjectsPagination(fetchedProjectsPagination);
@@ -327,10 +342,11 @@ function Projects() {
                   disabled={mode === "add"}
                 >
                   <ParticipantsList
-                    list={selectedProject.members}
+                    participants={selectedProject.members}
                     special={specialList}
                     onAddParticipant={addParticipant}
                     onRemoveParticipant={removeParticipant}
+                    onSelectParticipant={addParticipant}
                   />
                   <Collapse in={addParticipantMode}>
                     <Form className="p-2 bg-light" onSubmit={saveParticipant}>

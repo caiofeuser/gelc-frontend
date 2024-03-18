@@ -1,90 +1,98 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../../components/Header";
 import { Container, Col, Row } from "react-bootstrap";
-import DownloadsList from "../../../components/DownloadsList";
-import DownloadsForms from "../../../components/DownloadsForms/";
+import { ListGroup, Figure, Media } from "react-bootstrap";
+import PrivateList from "../../../components/PrivateList";
+import defaultImg from "../../../components/DownloadsList/img/default.svg";
 import ImageForms from "../../../components/ImageForms";
 import api from "../../../resources/api";
 import { getAuthenticatedUserPermission } from "../../../resources/auth";
+import { Form, Button } from "react-bootstrap";
+import defaultImageTools from "./tool.png";
 
-const Downloads = () => {
-  const [downloads, setDownloads] = useState([]);
-  const [selectedDownload, setSelectedDownload] = useState({});
-  const [downloadsPagination, setDownloadsPagination] = useState({});
+export default function PrivateTools() {
+  const [tools, setTools] = useState([]);
+  const [selectedTool, setSelectedTool] = useState({});
+  const [toolsPagination, setToolsPagination] = useState({});
   const [search, setSearch] = useState("");
   const [mode, setMode] = useState("add");
+  // forms states
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [url, setUrl] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const { docs: fetchedDownloads, ...fetchedDownloadsPagination } = (
+        await api.get("/tool")
+      ).data;
+      if (fetchedDownloads.length > 0) {
+        setSelectedTool(fetchedDownloads[0]);
+        setMode("update");
+      }
+      setTools(fetchedDownloads);
+      setToolsPagination(fetchedDownloadsPagination);
+    } catch (err) {
+      alert(
+        "Não foi possível acessar o servidor! Por favor, tente novamente em alguns instantes."
+      );
+      throw new Error("unable to access server!");
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { docs: fetchedDownloads, ...fetchedDownloadsPagination } = (
-          await api.get("/download")
-        ).data;
-        if (fetchedDownloads.length > 0) {
-          setSelectedDownload(fetchedDownloads[0]);
-          setMode("update");
-        }
-        setDownloads(fetchedDownloads);
-        setDownloadsPagination(fetchedDownloadsPagination);
-      } catch (err) {
-        alert(
-          "Não foi possível acessar o servidor! Por favor, tente novamente em alguns instantes."
-        );
-        throw new Error("unable to access server!");
-      }
-    };
     fetchData();
   }, []);
 
-  const addDownload = () => {
+  const addTool = () => {
     const newSelectedDownload = {
       _id: Math.random(),
       title: "",
       description: "",
       url: "",
     };
-    setSelectedDownload(newSelectedDownload);
+    setSelectedTool(newSelectedDownload);
     setMode("add");
+    setTitle("");
+    setDescription("");
+    setUrl("");
   };
 
-  const selectDownload = (download) => {
-    setSelectedDownload(download);
+  const selectTool = (e, tool) => {
+    e.preventDefault();
+    setSelectedTool(tool);
     setMode("update");
   };
 
-  const saveDownload = async (form) => {
+  const saveTool = async (form) => {
     try {
-      const title = form.get("title");
-      const description = form.get("description");
-      const url = form.get("url");
-
       if (!title || !description || !url) {
         alert("Há algum problema com os dados fornecidos.");
         return;
       }
 
-      let selectedDownload;
+      let selectedTool;
       if (mode === "add") {
-        const { data: newDownload } = await api.post("/download/", {
+        const { data: newTool } = await api.post("/tool/", {
           title,
           description,
           url,
         });
-        selectedDownload = newDownload;
+        selectedTool = newTool;
         setMode("update");
         alert("Download disponibilizado com sucesso!");
       } else if (mode === "update") {
-        const updatedDownload = { title, description, url };
-        const { data: updatedSelectedDownload } = await api.put(
-          `/download/${selectedDownload._id}`,
-          updatedDownload
+        const updatedTool = { title, description, url };
+        const { data: updatedSelectedTool } = await api.put(
+          `/tool/${selectedTool._id}`,
+          updatedTool
         );
-        selectedDownload = updatedSelectedDownload;
+        selectedTool = updatedSelectedTool;
         alert("Download alterado com sucesso!");
       }
-      setDownloads((prevDownloads) => [
-        selectedDownload,
-        ...prevDownloads.filter((item) => item._id !== selectedDownload._id),
+      setTools((prevDownloads) => [
+        selectedTool,
+        ...prevDownloads.filter((item) => item._id !== selectedTool._id),
       ]);
     } catch (err) {
       switch (err.response.status) {
@@ -111,48 +119,37 @@ const Downloads = () => {
     }
   };
 
-  const removeDownload = async (download) => {
+  const removeTool = async (e, tool) => {
+    console.log(tool);
     const confirmation = window.confirm(
-      `Deseja realmente remover o download ${download.title}?`
+      `Deseja realmente remover a ferramenta ${tool.title}?`
     );
     if (confirmation) {
       try {
-        await api.delete(`/download/${download._id}`);
-        if (download.image) {
-          await api.delete(`/image/${download.image._id}`);
-        }
-        setDownloads((prevDownloads) =>
-          prevDownloads.filter((item) => item._id !== download._id)
+        await api.delete(`/tool/${tool._id}`);
+        // Remove a ferramenta da lista após a exclusão bem-sucedida
+        setTools((prevTool) =>
+          prevTool.filter((item) => item._id !== tool._id)
         );
-        if (download === selectedDownload) {
-          if (downloads.length > 0) {
-            setSelectedDownload(downloads[0]);
+        // Lógica para selecionar uma nova ferramenta se a ferramenta excluída estava selecionada
+        if (tool === selectedTool) {
+          if (tools.length > 0) {
+            setSelectedTool(tools[0]);
           } else {
-            addDownload();
+            addTool();
           }
         }
-      } catch (err) {
-        switch (err.response.status) {
-          case 500:
-            alert(
-              "Ocorreu algum erro no servidor! Tente novamente em alguns instantes."
-            );
-            break;
-          case 403:
-            alert("Você não tem permissão para realizar essa operação!");
-            break;
-          case 401:
-            alert("É necessário se autenticar para realizar essa operação!");
-            break;
-          case 400:
-            alert("Há algum problema com os dados fornecidos!");
-            break;
-          default:
-            alert(
-              "Não foi possível acessar o servidor! Por favor, tente novamente em alguns instantes."
-            );
-            break;
+        // Atualiza a lista de ferramentas após a exclusão
+        if (tool.image) {
+          await api.delete(`/image/${tool.image._id}`);
         }
+        const { docs: fetchedDownloads, ...fetchedDownloadsPagination } = (
+          await api.get("/tool")
+        ).data;
+        setTools(fetchedDownloads);
+        setToolsPagination(fetchedDownloadsPagination);
+      } catch (err) {
+        // Tratamento de erros
       }
     }
   };
@@ -161,28 +158,31 @@ const Downloads = () => {
     try {
       let image;
       if (form.get("file").name) {
-        if (selectedDownload.image && selectedDownload.image._id) {
-          await api.delete(`image/${selectedDownload.image._id}`);
+        if (selectedTool.image && selectedTool.image._id) {
+          await api.delete(`image/${selectedTool.image._id}`);
         }
-        image = (
-          await api.post(`/image/download/${selectedDownload._id}`, form)
-        ).data;
+        image = (await api.post(`/image/tool/${selectedTool._id}`, form)).data;
       } else if (form.get("alt")) {
         image = (
-          await api.put(`/image/${selectedDownload.image._id}`, {
+          await api.put(`/image/${selectedTool.image._id}`, {
             alt: form.get("alt"),
           })
         ).data;
       } else {
         return;
       }
-      const updatedSelectedDownload = { ...selectedDownload, image };
-      setSelectedDownload(updatedSelectedDownload);
-      setDownloads((prevDownloads) => [
-        updatedSelectedDownload,
-        ...prevDownloads.filter(
-          (item) => item._id !== updatedSelectedDownload._id
-        ),
+      console.log(image);
+      console.log(selectedTool._id);
+
+      const updatedTool = await api.put(`/tool/${selectedTool._id}`, {
+        image: image._id,
+      });
+
+      const updatedSelectedTool = { ...selectedTool, image };
+      setSelectedTool(updatedSelectedTool);
+      setTools((prevDownloads) => [
+        updatedSelectedTool,
+        ...prevDownloads.filter((item) => item._id !== updatedSelectedTool._id),
       ]);
       alert("Arquivo enviado com sucesso!");
     } catch (err) {
@@ -210,20 +210,20 @@ const Downloads = () => {
     }
   };
 
-  const setDownloadPage = async (page) => {
+  const setToolPage = async (page) => {
     if (!page) {
-      page = downloadsPagination.page;
+      page = toolsPagination.page;
     }
     const params = { page };
     if (search) {
       params.search = search;
     }
     try {
-      const { docs: fetchedDownloads, ...fetchedDownloadsPagination } = (
-        await api.get("/download", { params })
+      const { docs: fetchedTool, ...fetchedToolPagination } = (
+        await api.get("/tool", { params })
       ).data;
-      setDownloads(fetchedDownloads);
-      setDownloadsPagination(fetchedDownloadsPagination);
+      setTools(fetchedTool);
+      setToolsPagination(fetchedToolPagination);
     } catch (err) {
       switch (err.response.status) {
         case 500:
@@ -240,18 +240,18 @@ const Downloads = () => {
     }
   };
 
-  const searchDownload = async (text) => {
+  const searchTool = async (text) => {
     setSearch(text);
-    setDownloadPage();
+    setToolPage();
   };
 
   return (
     <React.Fragment>
-      <Header admin={getAuthenticatedUserPermission()} downloads />
+      <Header admin={getAuthenticatedUserPermission()} tools />
       <main>
         <Container className="my-4">
-          <h3 className="text-uppercase">Downloads</h3>
-          <h4>Adicione ou remova downloads disponíveis em seu site</h4>
+          <h3 className="text-uppercase">Ferramentas</h3>
+          <h4>Adicione ou remova ferramentas disponíveis em seu site</h4>
           <p className="text-justify">
             Não é aconselhável enviar qualquer arquivo exceto imagens para o
             sistema, utilize aplicações como GoogleDrive ou Dropbox para
@@ -262,36 +262,123 @@ const Downloads = () => {
           <hr />
           <Row>
             <Col lg={6}>
-              <DownloadsList
-                list={downloads}
-                pagination={downloadsPagination}
-                onAddDownload={addDownload}
-                onRemoveDownload={removeDownload}
-                onSelectDownload={selectDownload}
-                onSetPage={setDownloadPage}
-                onSearch={searchDownload}
-              />
+              <PrivateList
+                list={tools}
+                pagination={toolsPagination}
+                onAdd={addTool}
+                onSearch={searchTool}
+                onSetPage={setToolPage}
+              >
+                {(tool, index) => (
+                  <ListGroup.Item
+                    key={tool._id || index}
+                    className="downloads-list-item"
+                  >
+                    <Media>
+                      <Figure className="text-center my-auto mx-2 p-2">
+                        <Figure.Image
+                          width={80}
+                          height={80}
+                          src={tool.image ? tool.image.url : defaultImageTools}
+                        />
+                      </Figure>
+                      <Media.Body className="my-auto">
+                        <h5>
+                          <a
+                            href=""
+                            className="text-success"
+                            onClick={(e) => {
+                              selectTool(e, tool);
+                            }}
+                          >
+                            {tool.title}
+                          </a>
+                        </h5>
+                        <p>{tool.description}</p>
+                        <a
+                          href=""
+                          className="text-danger text-uppercase"
+                          onClick={(e) => {
+                            removeTool(e, tool);
+                          }}
+                        >
+                          Remover download
+                        </a>
+                      </Media.Body>
+                    </Media>
+                  </ListGroup.Item>
+                )}
+              </PrivateList>
             </Col>
-            <Col lg={6} onClick={() => console.log(selectedDownload.image)}>
-              {selectedDownload._id && mode === "update" && (
-                <ImageForms
-                  
-                  image={selectedDownload.image}
-                  onSubmit={updateImage}
-                />
+            <Col lg={6} onClick={() => console.log(selectedTool)}>
+              {selectedTool._id && mode === "update" && (
+                <ImageForms image={selectedTool.image} onSubmit={updateImage} />
               )}
-              <DownloadsForms
-                key={selectedDownload._id}
-                download={selectedDownload}
-                onSubmit={saveDownload}
-                mode={mode}
-              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                }}
+              >
+                <div>
+                  <Form.Label>Título da ferramenta</Form.Label>
+                  <Form.Text>O título deve ser único</Form.Text>
+                  <Form.Control
+                    type="text"
+                    required
+                    maxLength={60}
+                    placeholder="título"
+                    defaultValue={selectedTool.title || ""}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                    }}
+                  />
+                </div>
+                <div>
+                  <Form.Label>Descrição da ferramenta</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    maxLength={300}
+                    rows="4"
+                    required
+                    placeholder="descrição"
+                    name="description"
+                    defaultValue={selectedTool.description || ""}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                    }}
+                  />
+                </div>
+                <div>
+                  <Form.Text>Uma breve descrição sobre a ferramenta</Form.Text>
+                  <Form.Label>Endereço da ferramenta</Form.Label>
+                  <Form.Control
+                    type="url"
+                    required
+                    placeholder="endereço"
+                    name="url"
+                    defaultValue={selectedTool.url || ""}
+                    onChange={(e) => {
+                      setUrl(e.target.value);
+                    }}
+                  />
+                  <Form.Text>Link para a ferramenta</Form.Text>
+                </div>
+              </div>
+              <Button
+                className="my-2"
+                onClick={() => {
+                  saveTool();
+                }}
+                variant="success"
+              >
+                {mode === "add" ? "Adicionar" : "Salvar informações"}
+              </Button>
             </Col>
           </Row>
         </Container>
       </main>
     </React.Fragment>
   );
-};
-
-export default Downloads;
+}

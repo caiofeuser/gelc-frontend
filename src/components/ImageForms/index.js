@@ -58,9 +58,9 @@ const ImageForms = ({
   // }
 
   return (
-    <section className="p-2 bg-light my-2" >
+    <section className="p-2 bg-light my-2">
       <Figure className="text-center w-100">
-        <Figure.Image src={image?.url} thumbnail />
+        <Figure.Image src={image?.url || defaultImg} thumbnail />
         <Figure.Caption>
           Somente imagens com a extensão .png, .jpeg ou .jpg são suportadas. O
           tamanho máximo da imagem deve ser de 2MB.

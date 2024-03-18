@@ -17,6 +17,7 @@ import Posts from "./pages/admin/Posts";
 import PrivateDownloads from "./pages/admin/Downloads";
 import ForgotPass from "./pages/admin/ForgotPass";
 import Tools from "./pages/main/Tools";
+import PrivateTools from "./pages/admin/Tools";
 import { isAuthenticated, isAuthorized } from "./resources/auth";
 
 function PrivateRoute({ component: Component, permission, ...rest }) {
@@ -115,6 +116,16 @@ function Router() {
           path="/admin/postagens"
           element={
             <PrivateRoute permission="min" exact={true} component={Posts} />
+          }
+        />
+        <Route
+          path="/admin/tools"
+          element={
+            <PrivateRoute
+              permission="min"
+              exact={true}
+              component={PrivateTools}
+            />
           }
         />
 

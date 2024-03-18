@@ -181,28 +181,39 @@ class Posts extends React.Component {
     }
   };
 
-  updateImage = async (form) => { 
+  updateImage = async (form) => {
     try {
       let image;
-  
+
       if (form.get("file").name) {
-        if (this.state.selectedPost.image && this.state.selectedPost.image._id) {
+        if (
+          this.state.selectedPost.image &&
+          this.state.selectedPost.image._id
+        ) {
           await api.delete(`image/${this.state.selectedPost.image._id}`);
         }
-  
-        image = (await api.post(`/image/post/${this.state.selectedPost._id}`, form)).data;
+
+        image = (
+          await api.post(`/image/post/${this.state.selectedPost._id}`, form)
+        ).data;
       } else if (form.get("alt")) {
-        image = (await api.put(`/image/${this.state.selectedPost.image._id}`, { alt: form.get("alt") })).data;
+        image = (
+          await api.put(`/image/${this.state.selectedPost.image._id}`, {
+            alt: form.get("alt"),
+          })
+        ).data;
       } else {
         return;
       }
-  
-      
+
       // Send the image ObjectId without wrapping it in "ObjectId()"
-      const updatedPost = await api.put(`/post/${this.state.selectedPost._id}`, {
-        image: image._id
-      });
-  
+      const updatedPost = await api.put(
+        `/post/${this.state.selectedPost._id}`,
+        {
+          image: image._id,
+        }
+      );
+
       let selectedPost = { ...this.state.selectedPost };
       selectedPost.image = image;
       this.setPostsPage();
@@ -212,7 +223,9 @@ class Posts extends React.Component {
       console.log(err);
       switch (err.response.status) {
         case 500:
-          alert("Ocorreu algum erro no servidor! Verifique a validade dos dados enviados e tente novamente em alguns instantes.");
+          alert(
+            "Ocorreu algum erro no servidor! Verifique a validade dos dados enviados e tente novamente em alguns instantes."
+          );
           break;
         case 403:
           alert("Você não tem permissão para realizar essa operação!");
@@ -224,12 +237,13 @@ class Posts extends React.Component {
           alert("Há algum problema com os dados fornecidos!");
           break;
         default:
-          alert("Não foi possível acessar o servidor! Por favor tente novamente em alguns instantes.");
+          alert(
+            "Não foi possível acessar o servidor! Por favor tente novamente em alguns instantes."
+          );
           break;
       }
     }
   };
-  
 
   setPostsPage = async (page) => {
     if (!page) {

@@ -81,7 +81,7 @@ const Downloads = () => {
         setMode("update");
         alert("Download disponibilizado com sucesso!");
       } else if (mode === "update") {
-        selectedDownloadProv = selectedDownload
+        selectedDownloadProv = selectedDownload;
         const updatedDownload = { title, description, url };
         const { data: updatedSelectedDownload } = await api.put(
           `/download/${
@@ -188,8 +188,6 @@ const Downloads = () => {
       } else {
         return;
       }
-
-      console.log(image._id);
 
       const updatedDownload = await api.put(
         `/download/${selectedDownload._id}`,
@@ -307,11 +305,13 @@ const Downloads = () => {
                   />
                 </Tab>
                 <Tab eventKey="image" title="Imagem">
-                  <ImageForms
-                    image={selectedDownload?.image}
-                    onSubmit={updateImage}
-                    disabled={mode === "add"}
-                  />
+                  <div onClick={() => console.log(selectedDownload)}>
+                    <ImageForms
+                      image={selectedDownload?.image}
+                      onSubmit={updateImage}
+                      disabled={mode === "add"}
+                    />
+                  </div>
                 </Tab>
               </Tabs>
             </Col>

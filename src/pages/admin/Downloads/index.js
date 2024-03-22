@@ -6,6 +6,7 @@ import DownloadsForms from "../../../components/DownloadsForms/";
 import ImageForms from "../../../components/ImageForms";
 import api from "../../../resources/api";
 import { getAuthenticatedUserPermission } from "../../../resources/auth";
+import { set } from "date-fns";
 
 const Downloads = () => {
   const [downloads, setDownloads] = useState([]);
@@ -97,6 +98,7 @@ const Downloads = () => {
           (item) => item._id !== selectedDownloadProv._id
         ),
       ]);
+      setSelectedDownload(selectedDownloadProv);
     } catch (err) {
       console.log(err);
       switch (err?.response?.status) {
@@ -304,14 +306,11 @@ const Downloads = () => {
                     mode={mode}
                   />
                 </Tab>
-                <Tab eventKey="image" title="Imagem">
-                  <div onClick={() => console.log(selectedDownload)}>
-                    <ImageForms
-                      image={selectedDownload?.image}
-                      onSubmit={updateImage}
-                      disabled={mode === "add"}
-                    />
-                  </div>
+                <Tab eventKey="image" title="Imagem" disabled={mode === "add"}>
+                  <ImageForms
+                    image={selectedDownload?.image}
+                    onSubmit={updateImage}
+                  />
                 </Tab>
               </Tabs>
             </Col>

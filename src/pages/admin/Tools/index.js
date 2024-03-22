@@ -94,6 +94,7 @@ export default function PrivateTools() {
         selectedTool,
         ...prevDownloads.filter((item) => item._id !== selectedTool._id),
       ]);
+      setSelectedTool(selectedTool);
     } catch (err) {
       switch (err.response.status) {
         case 500:
@@ -120,7 +121,6 @@ export default function PrivateTools() {
   };
 
   const removeTool = async (e, tool) => {
-    console.log(tool);
     const confirmation = window.confirm(
       `Deseja realmente remover a ferramenta ${tool.title}?`
     );
@@ -248,7 +248,7 @@ export default function PrivateTools() {
   return (
     <React.Fragment>
       <Header admin={getAuthenticatedUserPermission()} tools />
-      <main>
+      <main onClick={() => console.log(selectedTool._id)}>
         <Container className="my-4">
           <h3 className="text-uppercase">Ferramentas</h3>
           <h4>Adicione ou remova ferramentas disponíveis em seu site</h4>

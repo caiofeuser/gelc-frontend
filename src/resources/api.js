@@ -2,7 +2,11 @@ import axios from "axios";
 import { getToken } from "./auth";
 
 const api = axios.create({
-  baseURL: process.env.API_BASE_URL || "https://gelc-backend.onrender.com",
+  baseURL: "https://gelc-backend.onrender.com",
+  headers: {
+    "Content-Type": "*/*",
+    "Access-Control-Allow-Origin": "*", // Permite todas as origens
+  },
 });
 // const api = axios.create({ baseURL: "http://localhost:3333" });
 

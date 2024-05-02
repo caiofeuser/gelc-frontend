@@ -2,8 +2,8 @@ import axios from "axios";
 import { getToken } from "./auth";
 
 const api = axios.create({
-  // baseURL: "https://gelc-backend.onrender.com",
-  baseURL: "http://localhost:3333",
+  baseURL: "https://gelc-backend.onrender.com",
+  // baseURL: "http://localhost:3333",
   // headers: {
   //   "Content-Type": "application/json",
   // },
